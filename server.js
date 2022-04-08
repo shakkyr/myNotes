@@ -8,10 +8,11 @@ import postRoutes from './routes/posts.routes.js';
 
 const app = express()
 
-app.use('/posts', postRoutes )
+app.use(cors())
 app.use(bodyParser.json({extended: true}))
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(cors())
+
+app.use('/posts', postRoutes )
 // app.use(morgan('dev'))
 // app.use(helmet())
 
