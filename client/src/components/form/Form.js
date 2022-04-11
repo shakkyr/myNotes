@@ -31,18 +31,26 @@ const Form = ({currentId, setCurrentId}) => {
 
         dispatch(createPost(postData))
       }
+      clear()
 
     }
 
     const clear = () => {
-
+      setCurrentId(null);
+      setPostData({
+        creator: '',
+        title: '',
+        message: '',
+        tags: '',
+        selectedFile: ''
+      })
     }
 
 
   return (
     <Paper className={classes.paper}>
       <form autoComplete='off' noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
-      <Typography variant="h6"> Create A Note</Typography>
+      <Typography variant="h6"> {currentId ? 'Editing' : 'Create'} A Note</Typography>
       <TextField name="creator" variant='outlined' label="Creator" fullWidth value={postData.creator} onChange={(e)=> setPostData({ ...postData, creator: e.target.value})} />
       <TextField name="title" variant='outlined' label="title" fullWidth value={postData.title} onChange={(e)=> setPostData({ ...postData, title: e.target.value})} />
       <TextField name="message" variant='outlined' label="message" fullWidth value={postData.message} onChange={(e)=> setPostData({ ...postData, message: e.target.value})} />

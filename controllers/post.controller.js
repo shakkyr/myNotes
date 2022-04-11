@@ -14,29 +14,38 @@ export const getPosts = async (req, res) => {
 
 }
 
-export const createPosts = async (req, res) => {
-    const post = req.body;
+export const createPost = async (req, res) => {
+    const { title, message, selectedFile, creator, tags } = req.body;
 
-    const newPost = new PostMessage(post);
+    const newPostMessage = new PostMessage({ title, message, selectedFile, creator, tags })
 
     try {
-        await newPost.save()
+        await newPostMessage.save();
 
-        res.status(201).json(newPost);
-
-    } catch (err) {
-        res.status(409).json({message: err.message});
-
+        res.status(201).json(newPostMessage );
+    } catch (error) {
+        res.status(409).json({ message: error.message });
     }
 }
+
 export const updatePost = async (req, res) => {
-    const {id: _id} = req.params
-    const post = req.body
+    const { id } = req.params;
+    const { title, message, creator, selectedFile, tags } = req.body;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No Post With That Id');
+    const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
 
-    const updatedPost = await postMessage.findByIdAndUpdate(_id, post, {new: true})
+    await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
 
-    res.json(updatePost)
+    res.json(updatedPost);
+}
 
+export const deletePost = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
+
+    await PostMessage.findByIdAndRemove(id)
+
+    res.json({message: "Post Deleted Succesfully"})
 }
