@@ -1,16 +1,15 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export default makeStyles((theme) => ({
-  //! theme from materialUi docs
   paper: {
     marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "colum",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     padding: theme.spacing(2),
   },
   root: {
-    "& .MuiTextField-root": {
+    '& .MuiTextField-root': {
       margin: theme.spacing(1),
     },
   },
@@ -19,7 +18,7 @@ export default makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%",
+    width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
   },
   submit: {

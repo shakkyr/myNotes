@@ -1,19 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@material-ui/core';
+import {GoogleLogin} from 'react-google-login'
 import LockOutlinedIcon from '@material-ui/icons/LockOpenOutlined'
 import makeStyles from "./Styles";
 import Input from './Input'
 
 const Auth = () => {
     const classes = makeStyles();
+    const [showPassword, setShowPassword] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(true);
 
-    const isSignUp = false;
 
     const handleSubmit = (e) => {
         e.preventDefault();
     }
+
     const handleChange = () => {
 
+    }
+    
+    const handleShowPassword = () => {
+        setShowPassword(!showPassword)
+    }
+
+    const switchMode = () => {
+        setIsSignUp(!isSignUp)
+        handleShowPassword(false)
     }
 
   return (
@@ -35,6 +47,20 @@ const Auth = () => {
                             </>
                         )
                     }
+                    <Input name="email" label="Email Address" handleChange={handleChange} type="email" />
+                    <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? 'Text' : 'password'} handleShowPassword={handleShowPassword} />
+                    {isSignUp && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password" />}
+                </Grid>
+                
+                <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                    {isSignUp ? 'Sign Up' : "Sign In"}
+                </Button>
+                <Grid container justify="flex-end">
+                    <Grid item>
+                        <Button onClick={switchMode}>
+                            { isSignUp ? 'Already have an Account? Sign In' : "Don't have an Account? Sign Up"}
+                        </Button>
+                    </Grid>
                 </Grid>
             </form>
         </Paper>
