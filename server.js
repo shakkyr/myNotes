@@ -5,6 +5,7 @@ import cors from "cors"
 import DB from './dataBase/db.js'
 
 import postRoutes from './routes/posts.routes.js';
+import userRoutes from './routes/users.routes.js';
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(bodyParser.json({extended: true}))
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/posts', postRoutes )
+app.use('/user', userRoutes) 
 // app.use(morgan('dev'))
 // app.use(helmet())
 
