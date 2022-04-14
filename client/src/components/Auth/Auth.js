@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@material-ui/core';
 import Icon from './Icon'
 import {GoogleLogin} from 'react-google-login'
+
+import { useDispatch } from 'react-redux';
+
 import LockOutlinedIcon from '@material-ui/icons/LockOpenOutlined'
 import makeStyles from "./Styles";
 import Input from './Input'
@@ -11,6 +14,7 @@ const Auth = () => {
     const classes = makeStyles();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignUp, setIsSignUp] = useState(true);
+    const dispatch = useDispatch();
 
 
     const handleSubmit = (e) => {
@@ -30,8 +34,16 @@ const Auth = () => {
         handleShowPassword(false)
     }
 
-    const googleSuccess = (res) => {
-        console.log('res', res);
+    const googleSuccess = async (res) => {
+        const result = res?.profileObj;
+        const token = res?.tokenId;
+
+        try {
+            dispatch({type: 'AUTH', data: {result, token}})
+
+        } catch (error) {
+            console.log('ERORR', error);
+        }
     }
     const googleFailure = () => {
         console.log("Google Sign In Failed");
