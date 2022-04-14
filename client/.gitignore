@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 
+.Google.js
+
 # testing
 /coverage
 

@@ -5,6 +5,7 @@ import {GoogleLogin} from 'react-google-login'
 import LockOutlinedIcon from '@material-ui/icons/LockOpenOutlined'
 import makeStyles from "./Styles";
 import Input from './Input'
+import {GoogleId} from './Google'
 
 const Auth = () => {
     const classes = makeStyles();
@@ -59,8 +60,11 @@ const Auth = () => {
                     <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? 'Text' : 'password'} handleShowPassword={handleShowPassword} />
                     {isSignUp && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password" />}
                 </Grid>
+                <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                    {isSignUp ? 'Sign Up' : "Sign In"}
+                </Button>
                 <GoogleLogin 
-                    clientId='GOOGLE ID'
+                    clientId={GoogleId}
                     render={(renderProps) => (
                         <Button
                             className={classes.googleButton}
@@ -76,9 +80,6 @@ const Auth = () => {
                     onFailure={googleFailure}
                     cookiePolicy="single_host_origin"
                 />
-                <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-                    {isSignUp ? 'Sign Up' : "Sign In"}
-                </Button>
                 <Grid container justify="flex-end">
                     <Grid item>
                         <Button onClick={switchMode}>
