@@ -11,10 +11,13 @@ import makeStyles from "./Styles";
 import Input from './Input'
 import {GoogleId} from './Google'
 
+const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: ''}
+
 const Auth = () => {
     const classes = makeStyles();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignUp, setIsSignUp] = useState(true);
+    const [formData, setFormData] = useState(initialState)
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -23,7 +26,8 @@ const Auth = () => {
         e.preventDefault();
     }
 
-    const handleChange = () => {
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value})
 
     }
     
@@ -66,7 +70,7 @@ const Auth = () => {
                         isSignUp && (
                             <>
                                     <Input name="firstName" label="First Name" handleChange={handleChange} half/>
-                                    <Input name="firstName" label="First Name" handleChange={handleChange} half/>
+                                    <Input name="lastName" label="Last Name" handleChange={handleChange} half/>
                             </>
                         )
                     }
