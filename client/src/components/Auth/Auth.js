@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOpenOutlined'
 import makeStyles from "./Styles";
 import Input from './Input'
 import {GoogleId} from './Google'
+import {signin, signup} from '../../actions/auth'
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: ''}
 
@@ -24,6 +25,12 @@ const Auth = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+if(isSignUp) {
+    dispatch(signup(formData, history))
+} else {
+    dispatch(signin(formData, history))
+}
+        
     }
 
     const handleChange = (e) => {
