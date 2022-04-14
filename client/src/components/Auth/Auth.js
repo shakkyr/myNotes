@@ -29,6 +29,13 @@ const Auth = () => {
         handleShowPassword(false)
     }
 
+    const googleSuccess = (res) => {
+        console.log('res', res);
+    }
+    const googleFailure = () => {
+        console.log("Google Sign In Failed");
+    }
+
   return (
     <Container component="main" maxWidth="xs">
         <Paper className={classes.paper} elevation={3}>
@@ -65,6 +72,9 @@ const Auth = () => {
                             Google Sign In
                         </Button>
                     )}
+                    onSuccess={googleSuccess}
+                    onFailure={googleFailure}
+                    cookiePolicy="single_host_origin"
                 />
                 <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                     {isSignUp ? 'Sign Up' : "Sign In"}
