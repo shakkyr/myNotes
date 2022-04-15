@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 
 
-export const signin = (req, res) => {
+export const signin = async (req, res) => {
     const { email, password} = req.body;
     
     try {
@@ -22,10 +22,31 @@ export const signin = (req, res) => {
 
 
     } catch (error) {
+        console.log('controller signin error:', error);
         res.status(500).json({message: 'Somthing Went Wrong'});
     }
 }
 
-export const signup = (req, res) => {
+export const signup = async (req, res) => {
+    const { email, password, confirmPassword, firstName, lastName} = req.body;
 
+    if(existingUser) return res.status(404).json({message: 'User already exist'});
+
+    if(password !== confirmPassword) return res.status(404).json({message: 'passwords dont match'});
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const result = await User.create({email, password: hashedPassword, name: `${firstName} ${lastName}`})
+
+    const token = jwt.sign({email: result.email, id: result._id}, 'test', {expiresIn: "1h"});
+
+    res.status(200).json({ result, token})
+    try {
+        const existingUser = await User.findOne({email});
+
+
+    } catch (error) {
+        console.log('controller signup error:', error);
+        res.status(500).json({message: 'Somthing Went Wrong'});
+    }
 }
