@@ -9,7 +9,7 @@ import {useDispatch} from 'react-redux';
 
 const Navbar = () => {
     const classes = makeStyles();
-    const [user, setUser ] = useState(JSON.parse(localStorage.getItem('Profile')))
+    const [user, setUser ] = useState(JSON.parse(localStorage.getItem('profile')))
     const dispatch = useDispatch();
     const history = useHistory();
     const location = useLocation();
@@ -25,7 +25,7 @@ const Navbar = () => {
         const token = user?.token;
 
 
-        setUser(JSON.parse(localStorage.getItem('Profile')))
+        setUser(JSON.parse(localStorage.getItem('profile')))
     }, [location])
     
     return (
