@@ -75,15 +75,22 @@ export const createPost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
     const { id } = req.params;
-    const { title, message, creator, selectedFile, tags } = req.body;
+    const { title, message, selectedFile, tags } = req.body;
     
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
-
-    await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
-
-    res.json(updatedPost);
+    try {
+        // Only the creator may edit, and the creator field itself cannot be changed.
+        const updatedPost = await PostMessage.findOneAndUpdate(
+            { _id: id, creator: String(req.userId) },
+            { title, message, tags, selectedFile },
+            { new: true }
+        );
+        if (!updatedPost) return res.status(403).json({ message: "You can only edit your own posts" });
+        res.json(updatedPost);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 
 export const deletePost = async (req, res) => {
@@ -91,21 +98,27 @@ export const deletePost = async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    await PostMessage.findByIdAndRemove(id);
-
-    res.json({ message: "Post deleted successfully." });
+    try {
+        // Only the creator may delete.
+        const deleted = await PostMessage.findOneAndDelete({ _id: id, creator: String(req.userId) });
+        if (!deleted) return res.status(403).json({ message: "You can only delete your own posts" });
+        res.json({ message: "Post deleted successfully." });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 
 export const likePost = async (req, res) => {
     const { id } = req.params;
 
     if (!req.userId) {
-        return res.json({ message: "Unauthenticated" });
+        return res.status(401).json({ message: "Unauthenticated" });
       }
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
     
     const post = await PostMessage.findById(id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
 
     const index = post.likes.findIndex((id) => id ===String(req.userId));
 
@@ -124,13 +137,16 @@ export const commentPost = async (req, res) => {
     const { id } = req.params;
     const { value } = req.body;
 
-    const post = await PostMessage.findById(id);
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
+    if (typeof value !== "string" || !value.trim()) return res.status(400).json({ message: "Comment cannot be empty" });
 
-    post.comments.push(value);
-
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
-
-    res.json(updatedPost);
+    try {
+        const updatedPost = await PostMessage.findByIdAndUpdate(id, { $push: { comments: value } }, { new: true });
+        if (!updatedPost) return res.status(404).json({ message: "Post not found" });
+        res.json(updatedPost);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 export default router;
